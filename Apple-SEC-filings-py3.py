@@ -1,7 +1,7 @@
-# Written by Pete Swords
-# Last updated April 24, 2016
+# Written by pjswords
+# Last updated December 8, 2017
 
-# This program retrieves and parses Apple's annual SEC filings from 2007 
+# This script retrieves and parses Apple's annual SEC filings from 2007 
 # through 2015. After retrieving a report from Apple's website, the program 
 # searches for the section titled "Item 1A. Risk Factors" and builds a 
 # dictionary from the words in that section. The program then places 
@@ -11,9 +11,10 @@
 # Once a worksheet is built for each report, the program saves them in a single
 # XLSX file that can be used with Tableau.
 #
-# Note: This script requires access to the BeautifulSoup and OpenPyXL libraries.
+# Note: This script was written for Python 3, and it requires access to the 
+# BeautifulSoup, OpenPyXL, and nltk libraries.
 
-import re, string, sys
+import nltk, re, sys
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
 from urllib.error import URLError
@@ -38,6 +39,8 @@ count = 1
 wb = Workbook()
 # A dictionary for our extracted words
 d = dict()
+# A lemmatizer to help reduce dictionary clutter 
+lemma = nltk.wordnet.WordNetLemmatizer()
 # A (mostly) generic list of stopwords
 stopWords = ("a","able","about","across","after","all","almost",
              "also","am","among","an","and","any","are","as",
@@ -122,15 +125,22 @@ for page in webPageList:
         else:
             # Get rid of whitespace on each side of the line
             line = line.strip()
+            # Get rid of anything that can be represented with ASCII            
+            line = "".join(c for c in line if ord(c) < 128)
+            # Get rid of everything in string.punctuation except hyphens
+            line = "".join(c for c in line if c not in 
+                           '!"#$%&\'()*+,./:;<=>?@[\\]^_`{|}~')
+                           
             # If the line ends with "Risk Factors", reset the dictionary and 
             # set flag to 1 -- as long as the next line doesn't start with a number,
             # we're in the right place.
-            if re.search(r"Risk[\s\u00a0]*Factors$", line) and flag == 0:
+            if re.search(r"Risk\s*Factors$", line) and flag == 0:
                 d.clear()
                 print("Count " + str(count) + " of " + str(len(webPageList)) +
                       " - Item 1A found.")
                 flag = 1
                 continue
+            
             # If the flag is set to 1 and the very next line begins with
             # a number, it means we're at the document TOC -- a false positive.
             # Set the flag to zero, go to the next line and keep looking. If flag > 1,
@@ -139,9 +149,10 @@ for page in webPageList:
                 print("False positive, continuing to search...")
                 flag = 0
                 continue
+            
             # If we find "Item 1B." while the flag is set to anything greater than 1,
             # we can stop looping through lines and make our worksheet.
-            if re.search(r"^Item[\s\u00a0]*1B\.", line) and flag > 1:
+            if re.search(r"^Item\s*1B", line) and flag > 1:
                 print("Count " + str(count) + " of " + str(len(webPageList)) +
                       " - Item 1B found.")
                 flag = 0
@@ -153,15 +164,14 @@ for page in webPageList:
                 # The following print statement can be un-commented for debugging
                 # print(line)
                 flag = flag + 1
-                # Get rid of string.punctuation, stopwords, and annoying unicode quotes
-                line = "".join(c for c in line if c not in string.punctuation +
-                               "\u201c\u201d\u0093\u0094\x92")
                 line = line.lower()
                 words = line.split()
                 for word in words:
-                    # Get rid of any words that are numbers or have numbers in them.
-                    # Also, get rid of any words on our stopword list and any other
-                    # words with less than 3 characters.
+                    # Lemmatize the word to reduce dictionary clutter. 
+                    # Get rid of any words that are numbers or have numbers in 
+                    # them. Finally, get rid of any words on our stopword list 
+                    # and any other words with less than 3 characters.
+                    word = lemma.lemmatize(word)
                     if re.search(r"[0-9]", word) or len(word) < 3 or \
                             word in(stopWords):
                         continue
