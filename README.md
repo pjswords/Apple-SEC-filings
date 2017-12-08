@@ -1,7 +1,7 @@
 # Apple-SEC-filings
 These Python scripts retrieve and parse Apple's annual SEC filings from 2007 
 through 2015. Apple-SEC-filings-py2.py works with Python 2, and 
-Apple-SEC-filings-py3.py works with Python 3. Each script peerforms 
+Apple-SEC-filings-py3.py works with Python 3. Both scripts perform 
 the same function.
 
 After retrieving a report from Apple's website, the script 
