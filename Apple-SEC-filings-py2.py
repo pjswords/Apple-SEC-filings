@@ -1,4 +1,4 @@
-# Written by Pete Swords
+# Written by pjswords
 # Last updated December 8, 2017
 
 # This program retrieves and parses Apple's annual SEC filings from 2007 
