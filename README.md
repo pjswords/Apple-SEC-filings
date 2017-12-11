@@ -10,8 +10,9 @@ dictionary from the words in that section. The script then places
 the contents of the dictionary into an object that corresponds to 
 a Microsoft Excel worksheet. While building the worksheets, the script also
 provides console output showing which words have the highest frequency.
-Once a worksheet is built for each report, the script saves them in a single
-XLSX file that can be used with Tableau or other analytics software.
+Once a worksheet is built for each report, the script saves the worksheets 
+in a single XLSX workbook that can be used with Tableau 
+or other analytics software.
 
 Note: These scripts require access to the BeautifulSoup, OpenPyXL, 
 and nltk libraries.
