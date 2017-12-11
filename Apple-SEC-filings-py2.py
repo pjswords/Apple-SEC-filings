@@ -135,7 +135,7 @@ for page in webPageList:
             # If the line ends with "Risk Factors", reset the dictionary and 
             # set flag to 1 -- as long as the next line doesn't start with a 
             # number, we're in the right place.
-            if re.search(r"Risk\s*Factors$", line) and flag == 0:
+            if re.search(r"Risk\s*Factors$", line, re.MULTILINE) and flag == 0:
                 d.clear()
                 print("Count " + str(count) + " of " + str(len(webPageList)) + 
                       " - Item 1A found.")
@@ -146,14 +146,14 @@ for page in webPageList:
             # a number, it means we're at the document TOC -- a false positive.
             # Set the flag to zero, go to the next line and keep looking. If flag > 1,
             # it means we're already at the target section.
-            if re.search(r"^[0-9]", line) and flag == 1:
+            if re.search(r"^[0-9]+$", line, re.MULTILINE) and flag == 1:
                 print("False positive, continuing to search...")
                 flag = 0
                 continue
             
             # If we find "Item 1B." while the flag is set to anything greater than 1,
             # we can stop looping through lines and make our worksheet.
-            if re.search(r"Item\s*1B", line) and flag > 1:
+            if re.search(r"^Item\s*1B", line, re.MULTILINE) and flag > 1:
                 print("Count " + str(count) + " of " + str(len(webPageList)) +
                       " - Item 1B found.")
                 flag = 0
