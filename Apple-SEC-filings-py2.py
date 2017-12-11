@@ -126,7 +126,7 @@ for page in webPageList:
         else:
             # Get rid of whitespace on each side of the line
             line = line.strip()
-            # Get rid of anything that can be represented with ASCII            
+            # Get rid of anything that can't be represented with ASCII            
             line = "".join(c for c in line if ord(c) < 128)
             # Get rid of everything in string.punctuation except hyphens
             line = "".join(c for c in line if c not in 
