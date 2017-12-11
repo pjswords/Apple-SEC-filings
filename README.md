@@ -14,4 +14,4 @@ Once a worksheet is built for each report, the script saves them in a single
 XLSX file that can be used with Tableau or other analytics software.
 
 Note: These scripts require access to the BeautifulSoup, OpenPyXL, 
-ans nltk libraries.
+and nltk libraries.
