@@ -123,13 +123,24 @@ for page in webPageList:
         if not line.strip():
             continue
         else:
+            # Get rid of non-ASCII spaces and replace with normal spaces. 
+            # A number of different Unicode characters are incuded in this 
+            # class, but the big culprit is the non-breaking space (U+00A0). 
+            # Failure to remove this causes some words to be concatenated. 
+            # While we're at it, we'll change forward slashes to spaces as 
+            # well so that words separated with a slash are parsed normally.
+            line = re.sub(ur'[\u2002\u2003\u2007\u2008\u2009\u200A\u00A0/]', 
+                          ' ', line)
             # Get rid of whitespace on each side of the line
             line = line.strip()
-            # Get rid of anything that can't be represented with ASCII            
-            line = "".join(c for c in line if ord(c) < 128)
+            # Replace Unicode dashes with normal dashes
+            line = re.sub(ur'[\u2012\u2013\u2014\u2015\u2053]', '-', line)
             # Get rid of everything in string.punctuation except hyphens
             line = "".join(c for c in line if c not in 
                            '!"#$%&\'()*+,./:;<=>?@[\\]^_`{|}~')
+            # Finally, get rid of anything else that can't be represented with 
+            # ASCII            
+            line = "".join(c for c in line if ord(c) < 128)
                            
             # If the line ends with "Risk Factors", reset the dictionary and 
             # set flag to 1 -- as long as the next line doesn't start with a number,
