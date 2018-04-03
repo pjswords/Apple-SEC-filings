@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 # Written by pjswords
 # Last updated December 8, 2017
 
