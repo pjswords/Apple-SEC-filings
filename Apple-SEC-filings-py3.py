@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Written by pjswords
 # Last updated December 8, 2017
 
